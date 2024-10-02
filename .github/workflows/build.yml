@@ -3,7 +3,13 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      matrix:
+        config:
+          - { name: "Windows", os: windows-latest }
+          - { name: "Ubuntu",  os: ubuntu-latest }
+
     name: Build
     steps:
       - name: Checkout
@@ -20,13 +26,18 @@ jobs:
           cache: true
           stripdown: true
 
-      - name: Build
+      - name: Build Linux
+        if: ${{ matrix.config.os }} == 'ubuntu-latest'
         run: |
           source $VULKAN_SDK/setup-env.sh
           zig build
+      
+      - name: Build Windows
+        if: ${{ matrix.config.os }} == 'windows-latest'
+        run: zig build
 
       - name: Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app
+          name: ${{ matrix.config.os }}-app
           path: zig-out/bin/
