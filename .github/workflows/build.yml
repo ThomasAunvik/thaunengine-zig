@@ -26,18 +26,15 @@ jobs:
           cache: true
           stripdown: true
 
-      - name: Build Linux
-        if: ${{ matrix.config.os }} == 'ubuntu-latest'
-        run: |
-          source $VULKAN_SDK/setup-env.sh
-          zig build
+      - name: Setup Linux Env
+        if: contains(runner.os, 'ubuntu')
+        run: source $VULKAN_SDK/setup-env.sh
       
-      - name: Build Windows
-        if: ${{ matrix.config.os }} == 'windows-latest'
+      - name: Build
         run: zig build
 
       - name: Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.config.os }}-app
+          name: ${{ runner.os }}-app
           path: zig-out/bin/
