@@ -29,6 +29,11 @@ jobs:
       - name: Setup Linux Env
         if: contains(runner.os, 'ubuntu')
         run: source $VULKAN_SDK/setup-env.sh
+
+      
+      - name: Setup Windows Env
+        if: contains(runner.os, 'windows')
+        run: $env:PATH += ";$env:VULKAN_SDK\Bin"
       
       - name: Build
         run: zig build
