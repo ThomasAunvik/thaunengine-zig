@@ -21,7 +21,9 @@ jobs:
           stripdown: true
 
       - name: Build
-        run: zig build
+        run: |
+          source $VULKAN_SDK/setup-env.sh
+          zig build
 
       - name: Artifact
         uses: actions/upload-artifact@v4
